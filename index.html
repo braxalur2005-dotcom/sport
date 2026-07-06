@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VigorSports | Tu Energía, Tu Reglas</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Estilos propios -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        vigor: {
+                            red:    '#ff2a2a',
+                            orange: '#ff7b00',
+                            blue:   '#0055ff',
+                            dark:   '#0f0f11',
+                            darker: '#0a0a0b',
+                            gray:   '#1f1f22',
+                        }
+                    },
+                    animation: {
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%':      { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="antialiased selection:bg-vigor-red selection:text-white">
+
+    <!-- ===================== NAVEGACIÓN ===================== -->
+    <nav class="fixed w-full z-40 bg-vigor-darker/90 backdrop-blur-md border-b border-vigor-gray transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <i class="fa-solid fa-bolt text-vigor-red text-3xl mr-2"></i>
+                    <span class="font-heading font-black text-2xl tracking-wider text-white">VIGOR<span class="text-vigor-red">SPORTS</span></span>
+                </div>
+
+                <!-- Menú escritorio -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="#calzado"      class="text-gray-300 font-medium hover:text-vigor-red    transition-colors">Calzado</a>
+                    <a href="#ropa"         class="text-gray-300 font-medium hover:text-vigor-orange transition-colors">Ropa</a>
+                    <a href="#equipamiento" class="text-gray-300 font-medium hover:text-vigor-blue   transition-colors">Equipamiento</a>
+                    <a href="#ayuda"        class="text-gray-300 font-medium hover:text-vigor-red    transition-colors">Ayuda</a>
+                </div>
+
+                <!-- Carrito + menú móvil -->
+                <div class="flex items-center">
+                    <button onclick="toggleCart()" class="relative p-2 text-gray-300 hover:text-white transition-colors group">
+                        <i class="fa-solid fa-cart-shopping text-xl group-hover:scale-110 transition-transform"></i>
+                        <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-vigor-red rounded-full">0</span>
+                    </button>
+                    <button class="md:hidden ml-4 text-gray-300 hover:text-white" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menú móvil -->
+        <div id="mobile-menu" class="hidden md:hidden bg-vigor-dark border-b border-vigor-gray">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#calzado"      class="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-vigor-gray rounded-md">Calzado</a>
+                <a href="#ropa"         class="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-vigor-gray rounded-md">Ropa</a>
+                <a href="#equipamiento" class="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-vigor-gray rounded-md">Equipamiento</a>
+                <a href="#contacto"     class="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-vigor-gray rounded-md">Contacto</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===================== CARRITO LATERAL ===================== -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 hidden backdrop-blur-sm transition-opacity" onclick="toggleCart()"></div>
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full sm:w-96 bg-vigor-dark border-l border-vigor-gray z-50 shadow-2xl flex flex-col">
+        <div class="p-6 border-b border-vigor-gray flex justify-between items-center bg-vigor-darker">
+            <h2 class="text-2xl font-heading font-bold text-white"><i class="fa-solid fa-cart-shopping mr-2 text-vigor-red"></i> Tu Carrito</h2>
+            <button onclick="toggleCart()" class="text-gray-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-times text-2xl"></i>
+            </button>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-4">
+            <div class="text-center text-gray-500 mt-10">
+                <i class="fa-solid fa-box-open text-4xl mb-3"></i>
+                <p>Tu carrito está vacío.</p>
+                <p class="text-sm mt-2">¡Es hora de equiparse!</p>
+            </div>
+        </div>
+        <div class="p-6 border-t border-vigor-gray bg-vigor-darker">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-gray-400 font-medium">Subtotal</span>
+                <span class="text-2xl font-bold text-white" id="cart-total">$0.00</span>
+            </div>
+            <button onclick="checkout()" class="w-full bg-gradient-to-r from-vigor-red to-vigor-orange text-white font-bold py-3 px-4 rounded-lg hover:shadow-lg hover:shadow-vigor-red/30 transition-all transform hover:-translate-y-1 active:scale-95">
+                Proceder al Pago <i class="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ===================== HERO ===================== -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-vigor-red/20 rounded-full blur-[100px]"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-vigor-blue/20 rounded-full blur-[100px]"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col lg:flex-row items-center">
+            <div class="w-full lg:w-1/2 text-center lg:text-left">
+                <h1 class="text-5xl md:text-7xl font-heading font-black mb-6 leading-tight">
+                    DESATA TU <br>
+                    <span class="text-gradient animate-pulse-fast">MÁXIMO POTENCIAL</span>
+                </h1>
+                <p class="text-xl text-gray-400 mb-8 max-w-2xl mx-auto lg:mx-0 font-light">
+                    Equipamiento de alto rendimiento, calzado de élite y ropa deportiva diseñada para romper tus propios límites.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="#calzado"  class="bg-white text-black font-bold py-3 px-8 rounded-full hover:bg-gray-200 transition-colors transform hover:scale-105">Comprar Ahora</a>
+                    <a href="#contacto" class="border border-white text-white font-bold py-3 px-8 rounded-full hover:bg-white hover:text-black transition-colors">Soporte</a>
+                </div>
+            </div>
+            <div class="w-full lg:w-1/2 mt-12 lg:mt-0 relative">
+                <img src="https://images.unsplash.com/photo-1556817411-31ae72fa3ea0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                     alt="Atleta" class="rounded-2xl shadow-2xl shadow-vigor-red/20 object-cover h-[500px] w-full animate-float opacity-90 border border-vigor-gray">
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== CONTENIDO PRINCIPAL ===================== -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-32">
+
+        <!-- CALZADO -->
+        <section id="calzado" class="scroll-mt-24 observer-section fade-in-up">
+            <div class="flex items-end justify-between mb-10 border-b border-vigor-gray pb-4">
+                <div>
+                    <h2 class="text-4xl font-heading font-bold uppercase"><span class="text-vigor-red">///</span> Calzado</h2>
+                    <p class="text-gray-400 mt-2">Velocidad y soporte en cada paso.</p>
+                </div>
+                <a href="#" class="text-sm text-gray-400 hover:text-white hidden sm:block">Ver todo <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Producto 1 -->
+                <div class="product-card bg-vigor-gray rounded-xl border border-gray-800 flex flex-col h-full">
+                    <div class="product-image-container relative h-64 bg-black rounded-t-xl p-4 flex items-center justify-center">
+                        <span class="absolute top-4 left-4 bg-vigor-red text-white text-xs font-bold px-2 py-1 rounded">NUEVO</span>
+                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Tenis Running" class="object-contain h-full w-full drop-shadow-2xl">
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold font-heading">AeroGlide X1</h3>
+                            <span class="text-vigor-orange font-bold text-lg">$129.99</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6 flex-grow">Zapatillas de running ultra ligeras con amortiguación reactiva.</p>
+                        <button onclick="addToCart('p1','AeroGlide X1',129.99,'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=150&q=80')"
+                            class="w-full bg-vigor-darker border border-vigor-red text-white py-2 rounded font-bold hover:bg-vigor-red transition-colors flex items-center justify-center">
+                            <i class="fa-solid fa-cart-plus mr-2"></i> Agregar al Carrito
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Producto 2 -->
+                <div class="product-card bg-vigor-gray rounded-xl border border-gray-800 flex flex-col h-full">
+                    <div class="product-image-container relative h-64 bg-black rounded-t-xl p-4 flex items-center justify-center">
+                        <img src="https://images.unsplash.com/photo-1608231387042-66d1773070a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Tenis Basketball" class="object-contain h-full w-full drop-shadow-2xl">
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold font-heading">Court Master Pro</h3>
+                            <span class="text-vigor-orange font-bold text-lg">$149.50</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6 flex-grow">Soporte de tobillo superior y tracción máxima en la duela.</p>
+                        <button onclick="addToCart('p2','Court Master Pro',149.50,'https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=150&q=80')"
+                            class="w-full bg-vigor-darker border border-vigor-red text-white py-2 rounded font-bold hover:bg-vigor-red transition-colors flex items-center justify-center">
+                            <i class="fa-solid fa-cart-plus mr-2"></i> Agregar al Carrito
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Producto 3 -->
+                <div class="product-card bg-vigor-gray rounded-xl border border-gray-800 flex flex-col h-full">
+                    <div class="product-image-container relative h-64 bg-black rounded-t-xl p-4 flex items-center justify-center">
+                        <span class="absolute top-4 left-4 bg-vigor-blue text-white text-xs font-bold px-2 py-1 rounded">-20% OFERTA</span>
+                        <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Tenis Lifestyle" class="object-contain h-full w-full drop-shadow-2xl">
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold font-heading">Urban Sprint</h3>
+                            <div class="text-right">
+                                <span class="text-gray-500 line-through text-sm block">$110.00</span>
+                                <span class="text-vigor-orange font-bold text-lg">$88.00</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6 flex-grow">Estilo urbano deportivo para el día a día sin perder comodidad.</p>
+                        <button onclick="addToCart('p3','Urban Sprint',88.00,'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=150&q=80')"
+                            class="w-full bg-vigor-darker border border-vigor-red text-white py-2 rounded font-bold hover:bg-vigor-red transition-colors flex items-center justify-center">
+                            <i class="fa-solid fa-cart-plus mr-2"></i> Agregar al Carrito
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ROPA DEPORTIVA -->
+        <section id="ropa" class="scroll-mt-24 observer-section fade-in-up">
+            <div class="flex items-end justify-between mb-10 border-b border-vigor-gray pb-4">
+                <div>
+                    <h2 class="text-4xl font-heading font-bold uppercase"><span class="text-vigor-orange">///</span> Ropa Deportiva</h2>
+                    <p class="text-gray-400 mt-2">Tecnología textil para mantenerte fresco y seco.</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Producto 4 -->
+                <div class="product-card bg-vigor-gray rounded-xl border border-gray-800 flex flex-col h-full">
+                    <div class="product-image-container relative h-64 bg-black rounded-t-xl overflow-hidden flex items-center justify-center">
+                        <img src="https://images.unsplash.com/photo-1581655353564-df123a1eb820?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Camiseta" class="object-cover h-full w-full opacity-80 hover:opacity-100 transition-opacity">
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold font-heading">Camiseta V-Tech</h3>
+                            <span class="text-vigor-orange font-bold text-lg">$35.00</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6 flex-grow">Tejido transpirable de secado ultra rápido. Ideal para alta intensidad.</p>
+                        <button onclick="addToCart('p4','Camiseta V-Tech',35.00,'https://images.unsplash.com/photo-1581655353564-df123a1eb820?auto=format&fit=crop&w=150&q=80')"
+                            class="w-full bg-vigor-darker border border-vigor-orange text-white py-2 rounded font-bold hover:bg-vigor-orange transition-colors flex items-center justify-center">
+                            <i class="fa-solid fa-cart-plus mr-2"></i> Agregar al Carrito
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Producto 5 -->
+                <div class="product-card bg-vigor-gray rounded-xl border border-gray-800 flex flex-col h-full">
+                    <div class="product-image-container relative h-64 bg-black rounded-t-xl overflow-hidden flex items-center justify-center">
+                        <img src="https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Shorts" class="object-cover h-full w-full opacity-80 hover:opacity-100 transition-opacity">
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold font-heading">Shorts Compresión</h3>
+                            <span class="text-vigor-orange font-bold text-lg">$42.50</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6 flex-grow">Ajuste perfecto que mejora la circulación y reduce la fatiga muscular.</p>
+                        <button onclick="addToCart('p5','Shorts Compresión',42.50,'https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?auto=format&fit=crop&w=150&q=80')"
+                            class="w-full bg-vigor-darker border border-vigor-orange text-white py-2 rounded font-bold hover:bg-vigor-orange transition-colors flex items-center justify-center">
+                            <i class="fa-solid fa-cart-plus mr-2"></i> Agregar al Carrito
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Producto 6 -->
+                <div class="product-card bg-vigor-gray rounded-xl border border-gray-800 flex flex-col h-full">
+                    <div class="product-image-container relative h-64 bg-black rounded-t-xl overflow-hidden flex items-center justify-center">
+                        <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Sudadera" class="object-cover h-full w-full opacity-80 hover:opacity-100 transition-opacity">
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold font-heading">Sudadera WarmUp</h3>
+                            <span class="text-vigor-orange font-bold text-lg">$65.00</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6 flex-grow">Mantén el calor antes y después del entrenamiento. Tela premium polar.</p>
+                        <button onclick="addToCart('p6','Sudadera WarmUp',65.00,'https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=150&q=80')"
+                            class="w-full bg-vigor-darker border border-vigor-orange text-white py-2 rounded font-bold hover:bg-vigor-orange transition-colors flex items-center justify-center">
+                            <i class="fa-solid fa-cart-plus mr-2"></i> Agregar al Carrito
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- EQUIPAMIENTO -->
+        <section id="equipamiento" class="scroll-mt-24 observer-section fade-in-up">
+            <div class="flex items-end justify-between mb-10 border-b border-vigor-gray pb-4">
+                <div>
+                    <h2 class="text-4xl font-heading font-bold uppercase"><span class="text-vigor-blue">///</span> Artículos</h2>
+                    <p class="text-gray-400 mt-2">Herramientas para esculpir tu mejor versión.</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Producto 7 -->
+                <div class="product-card bg-vigor-gray rounded-xl border border-gray-800 flex flex-col h-full">
+                    <div class="product-image-container relative h-64 bg-black rounded-t-xl overflow-hidden flex items-center justify-center p-4">
+                        <img src="https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Mancuernas" class="object-contain h-full w-full">
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold font-heading">Mancuernas Ajustables</h3>
+                            <span class="text-vigor-orange font-bold text-lg">$199.00</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6 flex-grow">Ajuste rápido de 5 a 52 lbs. Ahorra espacio, maximiza resultados.</p>
+                        <button onclick="addToCart('p7','Mancuernas Ajustables',199.00,'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=150&q=80')"
+                            class="w-full bg-vigor-darker border border-vigor-blue text-white py-2 rounded font-bold hover:bg-vigor-blue transition-colors flex items-center justify-center">
+                            <i class="fa-solid fa-cart-plus mr-2"></i> Agregar al Carrito
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Producto 8 -->
+                <div class="product-card bg-vigor-gray rounded-xl border border-gray-800 flex flex-col h-full">
+                    <div class="product-image-container relative h-64 bg-black rounded-t-xl overflow-hidden flex items-center justify-center p-4">
+                        <img src="https://images.unsplash.com/photo-1614666013407-27efed34dc37?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Balón Futbol" class="object-contain h-full w-full">
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold font-heading">Balón Pro Match</h3>
+                            <span class="text-vigor-orange font-bold text-lg">$85.00</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6 flex-grow">Diseño aerodinámico texturizado para un control preciso.</p>
+                        <button onclick="addToCart('p8','Balón Pro Match',85.00,'https://images.unsplash.com/photo-1614666013407-27efed34dc37?auto=format&fit=crop&w=150&q=80')"
+                            class="w-full bg-vigor-darker border border-vigor-blue text-white py-2 rounded font-bold hover:bg-vigor-blue transition-colors flex items-center justify-center">
+                            <i class="fa-solid fa-cart-plus mr-2"></i> Agregar al Carrito
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Producto 9 -->
+                <div class="product-card bg-vigor-gray rounded-xl border border-gray-800 flex flex-col h-full">
+                    <div class="product-image-container relative h-64 bg-black rounded-t-xl overflow-hidden flex items-center justify-center p-4">
+                        <img src="https://images.unsplash.com/photo-1601122652254-8c85eb04d9a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Mat Yoga" class="object-contain h-full w-full">
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold font-heading">EcoMat Pro</h3>
+                            <span class="text-vigor-orange font-bold text-lg">$45.00</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6 flex-grow">Superficie antideslizante, acolchado de alta densidad. Materiales ecológicos.</p>
+                        <button onclick="addToCart('p9','EcoMat Pro',45.00,'https://images.unsplash.com/photo-1601122652254-8c85eb04d9a3?auto=format&fit=crop&w=150&q=80')"
+                            class="w-full bg-vigor-darker border border-vigor-blue text-white py-2 rounded font-bold hover:bg-vigor-blue transition-colors flex items-center justify-center">
+                            <i class="fa-solid fa-cart-plus mr-2"></i> Agregar al Carrito
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- AYUDA / FAQ -->
+        <section id="ayuda" class="scroll-mt-24 observer-section fade-in-up">
+            <div class="bg-vigor-gray rounded-2xl p-8 lg:p-12 border border-gray-800">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-heading font-bold mb-4">Preguntas Frecuentes</h2>
+                    <p class="text-gray-400">Resolvemos tus dudas al instante.</p>
+                </div>
+                <div class="max-w-3xl mx-auto space-y-4">
+
+                    <div class="faq-item bg-vigor-dark rounded-lg border border-gray-800">
+                        <button class="w-full px-6 py-4 flex justify-between items-center text-left focus:outline-none" onclick="toggleFaq(this)">
+                            <span class="font-bold text-lg">¿Cuáles son los tiempos de envío?</span>
+                            <i class="fa-solid fa-chevron-down text-vigor-red transition-transform duration-300"></i>
+                        </button>
+                        <div class="faq-answer px-6 bg-vigor-darker text-gray-400 rounded-b-lg text-sm md:text-base">
+                            Nuestros envíos estándar toman entre 3 a 5 días hábiles. También ofrecemos envío express (1-2 días hábiles) por un costo adicional al momento del checkout.
+                        </div>
+                    </div>
+
+                    <div class="faq-item bg-vigor-dark rounded-lg border border-gray-800">
+                        <button class="w-full px-6 py-4 flex justify-between items-center text-left focus:outline-none" onclick="toggleFaq(this)">
+                            <span class="font-bold text-lg">¿Cuál es la política de devoluciones?</span>
+                            <i class="fa-solid fa-chevron-down text-vigor-red transition-transform duration-300"></i>
+                        </button>
+                        <div class="faq-answer px-6 bg-vigor-darker text-gray-400 rounded-b-lg text-sm md:text-base">
+                            Tienes 30 días a partir de la recepción de tu pedido para devolver cualquier artículo sin usar, con sus etiquetas originales. El proceso es 100% gratuito.
+                        </div>
+                    </div>
+
+                    <div class="faq-item bg-vigor-dark rounded-lg border border-gray-800">
+                        <button class="w-full px-6 py-4 flex justify-between items-center text-left focus:outline-none" onclick="toggleFaq(this)">
+                            <span class="font-bold text-lg">¿Ofrecen garantía en el equipamiento?</span>
+                            <i class="fa-solid fa-chevron-down text-vigor-red transition-transform duration-300"></i>
+                        </button>
+                        <div class="faq-answer px-6 bg-vigor-darker text-gray-400 rounded-b-lg text-sm md:text-base">
+                            Sí, todos nuestros artículos y maquinarias cuentan con una garantía de fábrica de 1 año contra defectos de manufactura.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACTO -->
+        <section id="contacto" class="scroll-mt-24 pb-20 observer-section fade-in-up">
+            <div class="flex flex-col lg:flex-row gap-12 bg-vigor-darker rounded-2xl p-8 lg:p-12 border border-gray-800 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-vigor-red/10 rounded-full blur-[80px]"></div>
+
+                <div class="w-full lg:w-1/2 relative z-10">
+                    <h2 class="text-3xl font-heading font-bold mb-4">¿Quejas o Sugerencias?</h2>
+                    <p class="text-gray-400 mb-8">Tu retroalimentación nos hace más fuertes. Déjanos un mensaje y nuestro equipo de soporte se pondrá en contacto contigo en menos de 24 horas.</p>
+                    <div class="space-y-4 text-gray-300">
+                        <p class="flex items-center"><i class="fa-solid fa-envelope text-vigor-red mr-4 text-xl"></i> soporte@vigorsports.com</p>
+                        <p class="flex items-center"><i class="fa-solid fa-phone text-vigor-red mr-4 text-xl"></i> +1 (800) 123-4567</p>
+                        <p class="flex items-center"><i class="fa-solid fa-location-dot text-vigor-red mr-4 text-xl"></i> 123 Fitness Blvd, Ciudad Activa</p>
+                    </div>
+                </div>
+
+                <div class="w-full lg:w-1/2 relative z-10">
+                    <form id="contact-form" onsubmit="submitContact(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Nombre</label>
+                                <input type="text" required class="w-full bg-vigor-gray border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-vigor-red transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Email</label>
+                                <input type="email" required class="w-full bg-vigor-gray border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-vigor-red transition-colors">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Motivo</label>
+                            <select class="w-full bg-vigor-gray border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-vigor-red transition-colors appearance-none">
+                                <option>Sugerencia</option>
+                                <option>Queja</option>
+                                <option>Problema con pedido</option>
+                                <option>Otro</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Mensaje</label>
+                            <textarea required rows="4" class="w-full bg-vigor-gray border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-vigor-red transition-colors resize-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-vigor-red text-white font-bold py-3 px-4 rounded-lg hover:bg-red-700 transition-colors flex justify-center items-center">
+                            <span>Enviar Mensaje</span>
+                            <i class="fa-solid fa-paper-plane ml-2"></i>
+                        </button>
+                        <div id="form-success" class="hidden text-green-400 text-sm text-center mt-2 p-2 bg-green-400/10 rounded border border-green-400/20">
+                            ¡Mensaje enviado con éxito! Te contactaremos pronto.
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="bg-black border-t border-vigor-gray pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-1">
+                    <div class="flex items-center mb-4">
+                        <i class="fa-solid fa-bolt text-vigor-red text-2xl mr-2"></i>
+                        <span class="font-heading font-black text-xl tracking-wider text-white">VIGOR<span class="text-vigor-red">SPORTS</span></span>
+                    </div>
+                    <p class="text-gray-500 text-sm">Equipando a los atletas del mañana con la tecnología de hoy.</p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4">Tienda</h4>
+                    <ul class="space-y-2 text-gray-500 text-sm">
+                        <li><a href="#calzado"      class="hover:text-vigor-red    transition-colors">Calzado</a></li>
+                        <li><a href="#ropa"         class="hover:text-vigor-orange transition-colors">Ropa Deportiva</a></li>
+                        <li><a href="#equipamiento" class="hover:text-vigor-blue   transition-colors">Equipamiento</a></li>
+                        <li><a href="#"             class="hover:text-white        transition-colors">Ofertas</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4">Soporte</h4>
+                    <ul class="space-y-2 text-gray-500 text-sm">
+                        <li><a href="#ayuda"    class="hover:text-white transition-colors">FAQ</a></li>
+                        <li><a href="#contacto" class="hover:text-white transition-colors">Contacto</a></li>
+                        <li><a href="#"         class="hover:text-white transition-colors">Términos y Condiciones</a></li>
+                        <li><a href="#"         class="hover:text-white transition-colors">Política de Privacidad</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4">Síguenos</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-vigor-gray flex items-center justify-center text-gray-400 hover:bg-vigor-red hover:text-white transition-all transform hover:scale-110"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-vigor-gray flex items-center justify-center text-gray-400 hover:bg-vigor-red hover:text-white transition-all transform hover:scale-110"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-vigor-gray flex items-center justify-center text-gray-400 hover:bg-vigor-red hover:text-white transition-all transform hover:scale-110"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-vigor-gray flex items-center justify-center text-gray-400 hover:bg-vigor-red hover:text-white transition-all transform hover:scale-110"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-600 text-sm mb-4 md:mb-0">© 2026 VigorSports. Todos los derechos reservados.</p>
+                <div class="flex space-x-4 text-2xl text-gray-600">
+                    <i class="fa-brands fa-cc-visa       hover:text-white transition-colors"></i>
+                    <i class="fa-brands fa-cc-mastercard hover:text-white transition-colors"></i>
+                    <i class="fa-brands fa-cc-paypal     hover:text-white transition-colors"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg shadow-green-500/20 flex items-center pointer-events-none">
+        <i class="fa-solid fa-check-circle mr-3 text-xl"></i>
+        <span id="toast-message" class="font-medium">Producto agregado</span>
+    </div>
+
+    <!-- JavaScript propio -->
+    <script src="js/app.js"></script>
+</body>
+</html>
